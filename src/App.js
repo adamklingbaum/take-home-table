@@ -8,6 +8,14 @@ function App() {
   const data = initData;
   return (
     <div className='App'>
+      <h1>Sorted Data Table</h1>
+      <p>
+        Click on a column header to sort by that column in{' '}
+        <span className='header-selected bold'>ascending (↑)</span> order.
+        <br />
+        Click again to sort by the same column in{' '}
+        <span className='header-selected bold'>descending (↓)</span> order.
+      </p>
       <Table data={data} />
     </div>
   );
@@ -46,7 +54,8 @@ function Table(props) {
     return sortedData;
   };
 
-  const sortedData = getSortedData(); // derived state based on sortBy
+  // Derived state based on sortBy
+  const sortedData = getSortedData();
 
   const clearSort = () => {
     setSortBy(initSortBy);
@@ -74,7 +83,11 @@ function Table(props) {
       </button>
       <div className='Table'>
         <table>
-          <Head headers={headers} handleHeaderClick={handleHeaderClick} />
+          <Head
+            headers={headers}
+            handleHeaderClick={handleHeaderClick}
+            sortBy={sortBy}
+          />
           <Body headers={headers} data={sortedData} />
         </table>
       </div>
@@ -83,12 +96,24 @@ function Table(props) {
 }
 
 function Head(props) {
-  const { headers, handleHeaderClick } = props;
+  const { headers, handleHeaderClick, sortBy } = props;
+  const [key, direction] = sortBy;
+  const arrows = {
+    asc: '↑',
+    desc: '↓',
+  };
   return (
     <thead>
       <tr>
         {headers.map((header) => (
-          <th onClick={() => handleHeaderClick(header)}>{header}</th>
+          <th
+            key={header}
+            onClick={() => handleHeaderClick(header)}
+            className={key === header ? 'header-selected' : ''}
+          >
+            {header}
+            {key === header && <span>{arrows[direction]}</span>}
+          </th>
         ))}
       </tr>
     </thead>
@@ -97,19 +122,24 @@ function Head(props) {
 
 function Body(props) {
   const { headers, data } = props;
-
   return (
     <tbody>
-      {data.map((row) => {
-        return (
-          <tr>
-            {headers.map((header) => (
-              <td>{row[header] ?? '-'}</td>
-            ))}
-          </tr>
-        );
-      })}
+      {data.map((row, idx) => (
+        <BodyRow row={row} headers={headers} key={idx} />
+      ))}
     </tbody>
+  );
+}
+
+function BodyRow(props) {
+  const { row, headers } = props;
+
+  return (
+    <tr>
+      {headers.map((header) => (
+        <td key={header}>{row[header] ?? '-'}</td>
+      ))}
+    </tr>
   );
 }
 
