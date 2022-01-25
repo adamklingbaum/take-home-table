@@ -29,6 +29,10 @@ function Table(props) {
     });
     return sortedData;
   };
+
+  const clearSort = () => {
+    setSortBy(initSortBy);
+  };
 }
 
 export default App;
