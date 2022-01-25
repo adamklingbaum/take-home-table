@@ -39,5 +39,10 @@ td {
 }
 
 .bold {
-  font-weight: bold;
+  font-weight: 700;
+}
+
+button {
+  font-family: inherit;
+  font-weight: 700;
 }
