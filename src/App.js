@@ -12,6 +12,7 @@ function App() {
 function Table(props) {
   const { data } = props;
   const [sortBy, setSortBy] = useState(initSortBy);
+  const defaultSortDirection = 'asc';
 
   const getSortedData = () => {
     if (sortBy === initSortBy) return data;
@@ -32,6 +33,20 @@ function Table(props) {
 
   const clearSort = () => {
     setSortBy(initSortBy);
+  };
+
+  const handleHeaderClick = (header) => {
+    setSortBy((prevState) => {
+      if (prevState === initSortBy || sortBy[0] !== header) {
+        return [header, defaultSortDirection];
+      }
+
+      if (sortBy[1] === 'asc') {
+        return [header, 'desc'];
+      }
+
+      return [header, 'asc'];
+    });
   };
 }
 
