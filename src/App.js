@@ -1,12 +1,16 @@
 import './App.css';
 import { useState } from 'react';
-import initData from 'initData';
+import initData from './initData';
 
 const initSortBy = [null, null];
 
 function App() {
   const data = initData;
-  return <div className='App'></div>;
+  return (
+    <div className='App'>
+      <Table data={data} />
+    </div>
+  );
 }
 
 const getHeadersFromData = (data) => {
@@ -16,12 +20,14 @@ const getHeadersFromData = (data) => {
       headers.add(key);
     });
   });
+  return [...headers];
 };
 
 function Table(props) {
   const { data } = props;
   const [sortBy, setSortBy] = useState(initSortBy);
   const defaultSortDirection = 'asc';
+  const headers = getHeadersFromData(data);
 
   const getSortedData = () => {
     if (sortBy === initSortBy) return data;
@@ -39,6 +45,8 @@ function Table(props) {
     });
     return sortedData;
   };
+
+  const sortedData = getSortedData(); // derived state based on sortBy
 
   const clearSort = () => {
     setSortBy(initSortBy);
@@ -58,6 +66,51 @@ function Table(props) {
       return [header, 'asc'];
     });
   };
+
+  return (
+    <>
+      <button className='btn-clear' onClick={clearSort}>
+        Clear Sorting
+      </button>
+      <div className='Table'>
+        <table>
+          <Head headers={headers} handleHeaderClick={handleHeaderClick} />
+          <Body headers={headers} data={sortedData} />
+        </table>
+      </div>
+    </>
+  );
+}
+
+function Head(props) {
+  const { headers, handleHeaderClick } = props;
+  return (
+    <thead>
+      <tr>
+        {headers.map((header) => (
+          <th onClick={() => handleHeaderClick(header)}>{header}</th>
+        ))}
+      </tr>
+    </thead>
+  );
+}
+
+function Body(props) {
+  const { headers, data } = props;
+
+  return (
+    <tbody>
+      {data.map((row) => {
+        return (
+          <tr>
+            {headers.map((header) => (
+              <td>{row[header] ?? '-'}</td>
+            ))}
+          </tr>
+        );
+      })}
+    </tbody>
+  );
 }
 
 export default App;
