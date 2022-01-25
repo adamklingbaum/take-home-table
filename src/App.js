@@ -9,6 +9,15 @@ function App() {
   return <div className='App'></div>;
 }
 
+const getHeadersFromData = (data) => {
+  const headers = new Set();
+  data.forEach((obj) => {
+    Object.keys(obj).forEach((key) => {
+      headers.add(key);
+    });
+  });
+};
+
 function Table(props) {
   const { data } = props;
   const [sortBy, setSortBy] = useState(initSortBy);
@@ -41,6 +50,7 @@ function Table(props) {
         return [header, defaultSortDirection];
       }
 
+      // Sorting by existing sortBy key, so just need to change direction
       if (sortBy[1] === 'asc') {
         return [header, 'desc'];
       }
